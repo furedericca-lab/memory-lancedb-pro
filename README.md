@@ -792,6 +792,7 @@ Top contributors (from GitHub's contributors list, sorted by commit contribution
 <a href="https://github.com/rwmjhb"><img src="https://avatars.githubusercontent.com/u/91475811?v=4" width="48" height="48" alt="@rwmjhb" /></a>
 <a href="https://github.com/furedericca-lab"><img src="https://avatars.githubusercontent.com/u/263020793?v=4" width="48" height="48" alt="@furedericca-lab" /></a>
 <a href="https://github.com/joe2643"><img src="https://avatars.githubusercontent.com/u/19421931?v=4" width="48" height="48" alt="@joe2643" /></a>
+<a href="https://github.com/chenjiyong"><img src="https://avatars.githubusercontent.com/u/8199522?v=4" width="48" height="48" alt="@chenjiyong" /></a>
 </p>
 
 - [@win4r](https://github.com/win4r) (4 commits)
@@ -803,6 +804,7 @@ Top contributors (from GitHub's contributors list, sorted by commit contribution
 - [@rwmjhb](https://github.com/rwmjhb) (1 commit)
 - [@furedericca-lab](https://github.com/furedericca-lab) (1 commit)
 - [@joe2643](https://github.com/joe2643) (1 commit)
+- [@chenjiyong](https://github.com/chenjiyong) (1 commit)
 
 Full list: https://github.com/win4r/memory-lancedb-pro/graphs/contributors
 
