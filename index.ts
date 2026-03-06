@@ -25,6 +25,7 @@ import type { MdMirrorWriter } from "./src/tools.js";
 import { shouldSkipRetrieval } from "./src/adaptive-retrieval.js";
 import { AccessTracker } from "./src/access-tracker.js";
 import { runWithReflectionTransientRetryOnce } from "./src/reflection-retry.js";
+import { resolveReflectionSessionSearchDirs, stripResetSuffix } from "./src/session-recovery.js";
 import { createMemoryCLI } from "./cli.js";
 
 // ============================================================================
@@ -997,11 +998,6 @@ function sanitizeForContext(text: string): string {
 // ============================================================================
 // Session Path Helpers
 // ============================================================================
-
-function stripResetSuffix(fileName: string): string {
-  const resetIndex = fileName.indexOf(".reset.");
-  return resetIndex === -1 ? fileName : fileName.slice(0, resetIndex);
-}
 
 async function sortFileNamesByMtimeDesc(dir: string, fileNames: string[]): Promise<string[]> {
   const candidates = await Promise.all(
@@ -2017,12 +2013,16 @@ const memoryLanceDBProPlugin = {
           const sessionEntry = (context.previousSessionEntry || context.sessionEntry || {}) as Record<string, unknown>;
           const currentSessionId = typeof sessionEntry.sessionId === "string" ? sessionEntry.sessionId : "unknown";
           let currentSessionFile = typeof sessionEntry.sessionFile === "string" ? sessionEntry.sessionFile : undefined;
+          const sourceAgentId = parseAgentIdFromSessionKey(sessionKey) || "main";
 
           if (!currentSessionFile || currentSessionFile.includes(".reset.")) {
-            const searchDirs = new Set<string>();
-            if (currentSessionFile) searchDirs.add(dirname(currentSessionFile));
-            searchDirs.add(join(workspaceDir, "sessions"));
-
+            const searchDirs = resolveReflectionSessionSearchDirs({
+              context,
+              cfg,
+              workspaceDir,
+              currentSessionFile,
+              sourceAgentId,
+            });
             for (const sessionsDir of searchDirs) {
               const recovered = await findPreviousSessionFile(sessionsDir, currentSessionFile, currentSessionId);
               if (recovered) {
@@ -2043,7 +2043,6 @@ const memoryLanceDBProPlugin = {
           const timeIso = now.toISOString().split("T")[1].replace("Z", "");
           const timeHms = timeIso.split(".")[0];
           const timeCompact = timeIso.replace(/[:.]/g, "");
-          const sourceAgentId = parseAgentIdFromSessionKey(sessionKey) || "main";
           const reflectionRunAgentId = resolveReflectionRunAgentId(cfg, sourceAgentId);
           const targetScope = scopeManager.getDefaultScope(sourceAgentId);
           const toolErrorSignals = sessionKey
